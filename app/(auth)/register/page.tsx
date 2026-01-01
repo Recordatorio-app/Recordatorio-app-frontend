@@ -5,6 +5,7 @@ import Form from "@/components/ui/form";
 import Input from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
 import { registerUser } from "@/services/auth/auth.service";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -69,35 +70,71 @@ export default function Login() {
             />
           </div>
 
-          <div className="flex items-center justify-center gap-2">
-            <Input
-              label="Contraseña"
-              placeholder="Contraseña"
-              id="Password"
-              type={showPassword ? "text" : "password"}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? "O" : "M"}
-            </button>
+          <div className="flex items-center gap-2">
+            <div className="relative w-full">
+              <Input
+                label="Contraseña"
+                placeholder="Contraseña"
+                id="Password"
+                type={showPassword ? "text" : "password"}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <Button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                bg="bg-transparent absolute right-2 top-2/2 -translate-y-2/2"
+                textColor="text-black"
+              >
+                {showPassword ? (
+                  <Image
+                    src="/icons/hide.png"
+                    alt="Ocultar contraseña"
+                    width={20}
+                    height={20}
+                  />
+                ) : (
+                  <Image
+                    src="/icons/show.png"
+                    alt="Mostrar contraseña"
+                    width={20}
+                    height={20}
+                  />
+                )}
+              </Button>
+            </div>
           </div>
-          <div className="flex items-center justify-center gap-2">
-            <Input
-              label="Repetir Contraseña"
-              placeholder="Contraseña"
-              id="newPassword"
-              type={showConfirmPassword ? "text" : "password"}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            >
-              {showConfirmPassword ? "O" : "M"}
-            </button>
+          <div className="flex items-center gap-2">
+            <div className="relative w-full">
+              <Input
+                label="Confirmar Contraseña"
+                placeholder="Contraseña"
+                id="ConfirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+              <Button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                bg="bg-transparent absolute right-2 top-2/2 -translate-y-2/2"
+                textColor="text-black"
+              >
+                {showConfirmPassword ? (
+                  <Image
+                    src="/icons/hide.png"
+                    alt="Ocultar contraseña"
+                    width={20}
+                    height={20}
+                  />
+                ) : (
+                  <Image
+                    src="/icons/show.png"
+                    alt="Mostrar contraseña"
+                    width={20}
+                    height={20}
+                  />
+                )}
+              </Button>
+            </div>
           </div>
           <span className="text-center text-xs">
             ¿Ya tienes una cuenta?{" "}
@@ -105,7 +142,9 @@ export default function Login() {
               Inicia sesión aquí
             </Link>
           </span>
-          <Button bg="bg-one" textColor="text-white">Registrarse</Button>
+          <Button bg="bg-one" textColor="text-white">
+            Registrarse
+          </Button>
         </Form>
       </section>
     </main>
