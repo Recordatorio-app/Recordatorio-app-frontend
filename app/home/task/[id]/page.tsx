@@ -14,6 +14,8 @@ import Button from "@/components/ui/button";
 import Modal from "@/components/ui/modal";
 import Form from "@/components/ui/form";
 import Input from "@/components/ui/input";
+import Swal from "sweetalert2";
+import "sweetalert2/src/sweetalert2.scss";
 
 export default function TaskDetailPage() {
   const { id } = useParams();
@@ -29,14 +31,51 @@ export default function TaskDetailPage() {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [modalEditOpen, setModalEditOpen] = useState(false);
 
+  const [errors, setErrors] = useState<{
+    activityName?: string;
+    activityDescription?: string;
+    activityDeadline?: string;
+    activityDeadlineTime?: string;
+    activityImportance?: string;
+    general?: string;
+  }>({});
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
   useEffect(() => {
     getTaskById(id as string).then(setTask);
   }, [id]);
+  const validate = () => {
+    const newErrors: typeof errors = {};
 
+    if (!activityName.trim()) {
+      newErrors.activityName = "El nombre de la actividad es obligatorio";
+    }
+
+    if (!activityDescription.trim()) {
+      newErrors.activityDescription =
+        "La descripción de la actividad es obligatoria";
+    }
+
+    if (!activityDeadline.trim()) {
+      newErrors.activityDeadline = "La fecha límite es obligatoria";
+    }
+
+    if (!activityDeadlineTime.trim()) {
+      newErrors.activityDeadlineTime = "La hora límite es obligatoria";
+    }
+    if (!activityImportance.trim()) {
+      newErrors.activityImportance =
+        "La importancia de la actividad es obligatoria";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
   const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validate()) return;
     try {
       const body = {
         title: activityName,
@@ -47,6 +86,7 @@ export default function TaskDetailPage() {
         ).toISOString(),
         colorKey: activityImportance,
       };
+      setLoading(true);
       const res = await updateTask(selectedTask?._id || "", body);
 
       if (res) {
@@ -54,12 +94,21 @@ export default function TaskDetailPage() {
 
         setTask(update);
 
-        alert("Actividad editada con éxito");
+        Swal.fire({
+          title: "¡Actividad editada con éxito!",
+          icon: "success",
+          buttonsStyling: false,
+          customClass: {
+            confirmButton: "bg-one text-white px-4 py-2 rounded-md",
+          },
+        });
       }
     } catch (error) {
       console.error("Error editando tarea", error);
+      setLoading(false);
     }
 
+    setLoading(false);
     setModalEditOpen(false);
     setActivityName("");
     setActivityDescription("");
@@ -93,7 +142,14 @@ export default function TaskDetailPage() {
       setSelectedTask(task);
 
       if (task?.status === "realizada") {
-        alert("La actividad ya está marcada como realizada");
+        Swal.fire({
+          title: "La actividad ya está marcada como realizada",
+          icon: "info",
+          buttonsStyling: false,
+          customClass: {
+            confirmButton: "bg-one text-white px-4 py-2 rounded-md",
+          },
+        });
         return;
       }
       const body = {
@@ -106,21 +162,44 @@ export default function TaskDetailPage() {
 
       await updateTask(taskId, body);
       await getTaskById(taskId).then(setTask);
-      alert("Actividad marcada como realizada");
+      Swal.fire({
+        title: "¡Actividad marcada como realizada!",
+        icon: "success",
+        buttonsStyling: false,
+        customClass: {
+          confirmButton: "bg-one text-white px-4 py-2 rounded-md",
+        },
+      });
     } catch (error) {
       console.error("Error actualizando tarea", error);
     }
   };
   const deleteTaskHandler = async (taskId: string) => {
-    const response = confirm(
-      "¿Estás seguro de que deseas eliminar esta actividad?"
-    );
-    if (!response) return;
+    const response = await Swal.fire({
+      title: "¿Estás seguro de que deseas eliminar esta actividad?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+      buttonsStyling: false,
+      customClass: {
+        confirmButton: "bg-one text-white px-4 py-2 rounded-md mr-2",
+        cancelButton: "bg-four text-black px-4 py-2 rounded-md",
+      },
+    });
+    if (!response.isConfirmed) return;
 
     const res = await deleteTask(taskId);
 
     if (res) {
-      alert("Actividad eliminada con éxito");
+      Swal.fire({
+        title: "¡Actividad eliminada con éxito!",
+        icon: "success",
+        buttonsStyling: false,
+        customClass: {
+          confirmButton: "bg-one text-white px-4 py-2 rounded-md",
+        },
+      });
       router.push("/home");
     }
   };
@@ -208,6 +287,7 @@ export default function TaskDetailPage() {
             type="text"
             value={activityName}
             onChange={(e) => setActivityName(e.target.value)}
+            error={errors.activityName}
           />
           <Input
             label="Descripción de la Actividad"
@@ -217,6 +297,7 @@ export default function TaskDetailPage() {
             className="bg-white rounded-md p-2 text-xs w-full h-24 focus:outline-none focus:ring-2 focus:ring-one"
             value={activityDescription}
             onChange={(e) => setActivityDescription(e.target.value)}
+            error={errors.activityDescription}
           />
           <Input
             label="Estado de la Actividad"
@@ -238,6 +319,7 @@ export default function TaskDetailPage() {
               type="date"
               value={activityDeadline}
               onChange={(e) => setActivityDeadline(e.target.value)}
+              error={errors.activityDeadline}
             />
             <Input
               label="Hora límite de la Actividad"
@@ -246,6 +328,7 @@ export default function TaskDetailPage() {
               type="time"
               value={activityDeadlineTime}
               onChange={(e) => setActivityDeadlineTime(e.target.value)}
+              error={errors.activityDeadlineTime}
             />
           </div>
 
@@ -273,8 +356,8 @@ export default function TaskDetailPage() {
             >
               Cancelar
             </Button>
-            <Button bg="bg-one" textColor="text-white">
-              Guardar
+            <Button bg="bg-one" textColor="text-white" loading={loading}>
+              {loading ? "Guardando..." : "Guardar Cambios"}
             </Button>
           </div>
         </Form>
