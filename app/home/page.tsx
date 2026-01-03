@@ -1,5 +1,6 @@
 "use client";
 
+import EnableNotificationsButton from "@/components/EnableNotificationsButton";
 import Banner from "@/components/home/banner";
 import Card from "@/components/home/card";
 import Pagination from "@/components/home/pagination";
@@ -337,7 +338,7 @@ export default function Home() {
       setPendingTasks(pending.stats.pendientes);
       setCompletedTasks(completed.stats.realizadas);
 
-      Swal.fire({ 
+      Swal.fire({
         title: "¡Actividad marcada como realizada!",
         icon: "success",
         buttonsStyling: false,
@@ -377,7 +378,7 @@ export default function Home() {
     setCompletedTasks(updateCompleted.stats.realizadas);
 
     if (res) {
-      Swal.fire({ 
+      Swal.fire({
         title: "¡Actividad eliminada con éxito!",
         icon: "success",
         buttonsStyling: false,
@@ -398,45 +399,48 @@ export default function Home() {
           Bienvenido {user ? user.name : "Usuario"} al recordatorio de
           actividades
         </h1>
-        <Button
-          bg="bg-four flex items-center gap-2 mt-5"
-          textColor="text-black"
-          type="button"
-          onClick={async () => {
-            const response = await Swal.fire({
-              title: "¿Deseas cerrar sesión?",
-              icon: "question",
-              showCancelButton: true,
-              confirmButtonText: "Sí",
-              cancelButtonText: "No",
-              buttonsStyling: false,
-              customClass: {
-                confirmButton: "bg-one text-white px-4 py-2 rounded-md mr-2",
-                cancelButton: "bg-four text-black px-4 py-2 rounded-md",
-              },
-            });
-            if (response.isConfirmed) {
-              Swal.fire({ 
-                title: "¡Sesión cerrada exitosamente!",
-                icon: "success",
+        <div className="flex flex-col  gap-4 mt-5">
+          <Button
+            bg="bg-four flex items-center gap-2 mt-5"
+            textColor="text-black"
+            type="button"
+            onClick={async () => {
+              const response = await Swal.fire({
+                title: "¿Deseas cerrar sesión?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Sí",
+                cancelButtonText: "No",
                 buttonsStyling: false,
                 customClass: {
-                  confirmButton: "bg-one text-white px-4 py-2 rounded-md",
+                  confirmButton: "bg-one text-white px-4 py-2 rounded-md mr-2",
+                  cancelButton: "bg-four text-black px-4 py-2 rounded-md",
                 },
               });
-              localStorage.removeItem("token");
-              router.push("/");
-            } 
-          }}
-        >
-          Cerrar Sesión{" "}
-          <Image
-            src={"/icons/logout.png"}
-            alt="Cerrar sesión"
-            width={"20"}
-            height={"20"}
-          />
-        </Button>
+              if (response.isConfirmed) {
+                Swal.fire({
+                  title: "¡Sesión cerrada exitosamente!",
+                  icon: "success",
+                  buttonsStyling: false,
+                  customClass: {
+                    confirmButton: "bg-one text-white px-4 py-2 rounded-md",
+                  },
+                });
+                localStorage.removeItem("token");
+                router.push("/");
+              }
+            }}
+          >
+            Cerrar Sesión{" "}
+            <Image
+              src={"/icons/logout.png"}
+              alt="Cerrar sesión"
+              width={"20"}
+              height={"20"}
+            />
+          </Button>
+          <EnableNotificationsButton />
+        </div>
       </section>
 
       <section className="flex flex-col items-center justify-center mt-10 w-full ">
