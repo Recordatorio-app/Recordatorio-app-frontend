@@ -32,14 +32,14 @@ const Card = ({
       <div className="w-2" style={{ backgroundColor: color }} />
 
       {/* Contenido */}
-      <div className="flex flex-col p-4 flex-1 gap-2">
-        <h3 className="text-lg font-semibold text-center">{title}</h3>
+      <div className="flex flex-col p-4 flex-1 gap-2 line-clamp-2">
+        <h3 className="text-lg font-semibold text-center truncate">{title}</h3>
         <div className="grid grid-cols-2 gap-8 m-auto max-w-50">
           <p className="text-sm text-black">Fecha limite: {fecha}</p>
           <p className="text-sm text-black">Hora limite: {hora}</p>
         </div>
 
-        <p className="text-xs mt-2 w-full max-h-50">{descripcion}</p>
+        <p className="text-xs mt-2 w-full max-h-50 truncate mb-2">{descripcion}</p>
 
         {/* Botones */}
         <div className="grid grid-cols-2 m-auto gap-2 w-30 ">
@@ -47,7 +47,7 @@ const Card = ({
             type="button"
             bg="bg-four w-3/4"
             textColor="text-black"
-            onClick={()=> router.push(`home/task/${idTask}`)}
+            onClick={() => router.push(`home/task/${idTask}`)}
           >
             <Image
               src={"/icons/view.png"}
