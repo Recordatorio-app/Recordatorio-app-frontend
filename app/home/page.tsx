@@ -25,6 +25,8 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import "sweetalert2/src/sweetalert2.scss";
 
 export default function Home() {
   const { user } = useAuth();
@@ -64,6 +66,16 @@ export default function Home() {
   const [pendingTasks, setPendingTasks] = useState(0);
   const [completedTasks, setCompletedTasks] = useState(0);
 
+  const [errors, setErrors] = useState<{
+    activityName?: string;
+    activityDescription?: string;
+    activityDeadline?: string;
+    activityDeadlineTime?: string;
+    activityImportance?: string;
+    general?: string;
+  }>({});
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -96,8 +108,37 @@ export default function Home() {
     fetchTasks();
   }, [page, pageCompleted, user]);
 
+  const validate = () => {
+    const newErrors: typeof errors = {};
+
+    if (!activityName.trim()) {
+      newErrors.activityName = "El nombre de la actividad es obligatorio";
+    }
+
+    if (!activityDescription.trim()) {
+      newErrors.activityDescription =
+        "La descripción de la actividad es obligatoria";
+    }
+
+    if (!activityDeadline.trim()) {
+      newErrors.activityDeadline = "La fecha límite es obligatoria";
+    }
+
+    if (!activityDeadlineTime.trim()) {
+      newErrors.activityDeadlineTime = "La hora límite es obligatoria";
+    }
+    if (!activityImportance.trim()) {
+      newErrors.activityImportance =
+        "La importancia de la actividad es obligatoria";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!validate()) return;
 
     const body = {
       title: activityName,
@@ -109,10 +150,20 @@ export default function Home() {
       colorKey: activityImportance,
     };
     try {
+      setLoading(true);
+      setErrors({});
+
       const res = await createTask(body);
 
       if (res) {
-        alert("Actividad creada con éxito");
+        Swal.fire({
+          title: "¡Actividad creada con éxito!",
+          icon: "success",
+          buttonsStyling: false,
+          customClass: {
+            confirmButton: "bg-one text-white px-4 py-2 rounded-md",
+          },
+        });
         const update = await getTasks(page, 4, "pendiente");
         setPendingTasksList(update.data);
         setPendingTotalPages(update.pagination.totalPages);
@@ -120,8 +171,19 @@ export default function Home() {
       }
     } catch (error) {
       console.error("Error creando tarea", error);
+      setLoading(false);
+      Swal.fire({
+        title: "Error",
+        text: "Ocurrió un error al crear la actividad",
+        icon: "error",
+        buttonsStyling: false,
+        customClass: {
+          confirmButton: "bg-one text-white px-4 py-2 rounded-md",
+        },
+      });
     }
 
+    setLoading(false);
     setOpen(false);
     setActivityName("");
     setActivityDescription("");
@@ -131,6 +193,8 @@ export default function Home() {
   };
   const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validate()) return;
+
     try {
       const body = {
         title: activityName,
@@ -142,7 +206,7 @@ export default function Home() {
         colorKey: activityImportance,
       };
       const res = await updateTask(selectedTask?._id || "", body);
-
+      setLoading(true);
       if (res) {
         const update = await getTasks(page, 4, "pendiente");
         const updateCompleted = await getTasks(pageCompleted, 4, "realizada");
@@ -156,12 +220,30 @@ export default function Home() {
         setPendingTasks(update.stats.pendientes);
         setCompletedTasks(updateCompleted.stats.realizadas);
 
-        alert("Actividad editada con éxito");
+        Swal.fire({
+          title: "¡Actividad editada con éxito!",
+          icon: "success",
+          buttonsStyling: false,
+          customClass: {
+            confirmButton: "bg-one text-white px-4 py-2 rounded-md",
+          },
+        });
       }
     } catch (error) {
       console.error("Error editando tarea", error);
+      setLoading(false);
+      Swal.fire({
+        title: "Error",
+        text: "Ocurrió un error al editar la actividad",
+        icon: "error",
+        buttonsStyling: false,
+        customClass: {
+          confirmButton: "bg-one text-white px-4 py-2 rounded-md",
+        },
+      });
     }
 
+    setLoading(false);
     setModalEditOpen(false);
     setActivityName("");
     setActivityDescription("");
@@ -190,6 +272,7 @@ export default function Home() {
   const handlePalette = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const res = await updateUserPalette(
         user?.id || "",
         editablePalette || {}
@@ -197,7 +280,15 @@ export default function Home() {
       setPalette(res);
       setEditablePalette(res);
 
-      alert("Paleta de colores actualizada con éxito");
+      Swal.fire({
+        title: "¡Paleta de colores actualizada con éxito!",
+        icon: "success",
+        buttonsStyling: false,
+        customClass: {
+          confirmButton: "bg-one text-white px-4 py-2 rounded-md",
+        },
+      });
+      setLoading(false);
       setModalEditColorsOpen(false);
     } catch (error) {
       console.log("error:", error);
@@ -214,7 +305,14 @@ export default function Home() {
       setSelectedTask(task);
 
       if (task?.status === "realizada") {
-        alert("La actividad ya está marcada como realizada");
+        Swal.fire({
+          title: "La actividad ya está marcada como realizada",
+          icon: "info",
+          buttonsStyling: false,
+          customClass: {
+            confirmButton: "bg-one text-white px-4 py-2 rounded-md",
+          },
+        });
         return;
       }
       const body = {
@@ -239,16 +337,32 @@ export default function Home() {
       setPendingTasks(pending.stats.pendientes);
       setCompletedTasks(completed.stats.realizadas);
 
-      alert("Actividad marcada como realizada");
+      Swal.fire({ 
+        title: "¡Actividad marcada como realizada!",
+        icon: "success",
+        buttonsStyling: false,
+        customClass: {
+          confirmButton: "bg-one text-white px-4 py-2 rounded-md",
+        },
+      });
     } catch (error) {
       console.error("Error actualizando tarea", error);
     }
   };
   const deleteTaskHandler = async (taskId: string) => {
-    const response = confirm(
-      "¿Estás seguro de que deseas eliminar esta actividad?"
-    );
-    if (!response) return;
+    const response = await Swal.fire({
+      title: "¿Estás seguro de que deseas eliminar esta actividad?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+      buttonsStyling: false,
+      customClass: {
+        confirmButton: "bg-one text-white px-4 py-2 rounded-md mr-2",
+        cancelButton: "bg-four text-black px-4 py-2 rounded-md ",
+      },
+    });
+    if (!response.isConfirmed) return;
 
     const res = await deleteTask(taskId);
 
@@ -263,7 +377,14 @@ export default function Home() {
     setCompletedTasks(updateCompleted.stats.realizadas);
 
     if (res) {
-      alert("Actividad eliminada con éxito");
+      Swal.fire({ 
+        title: "¡Actividad eliminada con éxito!",
+        icon: "success",
+        buttonsStyling: false,
+        customClass: {
+          confirmButton: "bg-one text-white px-4 py-2 rounded-md",
+        },
+      });
       router.push("/home");
     }
   };
@@ -277,6 +398,45 @@ export default function Home() {
           Bienvenido {user ? user.name : "Usuario"} al recordatorio de
           actividades
         </h1>
+        <Button
+          bg="bg-four flex items-center gap-2 mt-5"
+          textColor="text-black"
+          type="button"
+          onClick={async () => {
+            const response = await Swal.fire({
+              title: "¿Deseas cerrar sesión?",
+              icon: "question",
+              showCancelButton: true,
+              confirmButtonText: "Sí",
+              cancelButtonText: "No",
+              buttonsStyling: false,
+              customClass: {
+                confirmButton: "bg-one text-white px-4 py-2 rounded-md mr-2",
+                cancelButton: "bg-four text-black px-4 py-2 rounded-md",
+              },
+            });
+            if (response.isConfirmed) {
+              Swal.fire({ 
+                title: "¡Sesión cerrada exitosamente!",
+                icon: "success",
+                buttonsStyling: false,
+                customClass: {
+                  confirmButton: "bg-one text-white px-4 py-2 rounded-md",
+                },
+              });
+              localStorage.removeItem("token");
+              router.push("/");
+            } 
+          }}
+        >
+          Cerrar Sesión{" "}
+          <Image
+            src={"/icons/logout.png"}
+            alt="Cerrar sesión"
+            width={"20"}
+            height={"20"}
+          />
+        </Button>
       </section>
 
       <section className="flex flex-col items-center justify-center mt-10 w-full ">
@@ -447,12 +607,19 @@ export default function Home() {
         title="Agregar Actividad"
       >
         <Form onSubmit={handleSubmit} style="flex flex-col gap-6  rounded-lg">
+          {errors.general && (
+            <span className="text-red-500 text-s text-center">
+              {errors.general}
+            </span>
+          )}
           <Input
             label="Nombre de la Actividad"
             placeholder="Nombre de la Actividad"
             id="activityName"
             type="text"
             onChange={(e) => setActivityName(e.target.value)}
+            icon={undefined}
+            error={errors.activityName}
           />
           <Input
             label="Descripción de la Actividad"
@@ -461,6 +628,8 @@ export default function Home() {
             as="textarea"
             className="bg-white rounded-md p-2 text-xs w-full h-24 focus:outline-none focus:ring-2 focus:ring-one"
             onChange={(e) => setActivityDescription(e.target.value)}
+            icon={undefined}
+            error={errors.activityDescription}
           />
           <div className="flex gap-2 items-center">
             <Input
@@ -469,6 +638,7 @@ export default function Home() {
               id="activityDeadline"
               type="date"
               onChange={(e) => setActivityDeadline(e.target.value)}
+              error={errors.activityDeadline}
             />
             <Input
               label="Hora límite de la Actividad"
@@ -476,6 +646,7 @@ export default function Home() {
               id="activityDeadlineTime"
               type="time"
               onChange={(e) => setActivityDeadlineTime(e.target.value)}
+              error={errors.activityDeadlineTime}
             />
           </div>
 
@@ -493,17 +664,21 @@ export default function Home() {
               { label: "Otro", value: "otro" },
             ]}
             onChange={(e) => setActivityImportance(e.target.value)}
+            error={errors.activityImportance}
           />
           <div className="flex gap-2 justify-center">
             <Button
               bg="bg-two"
               textColor="text-white "
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                setOpen(false);
+                setErrors({});
+              }}
             >
               Cancelar
             </Button>
-            <Button bg="bg-one" textColor="text-white">
-              Guardar
+            <Button bg="bg-one" textColor="text-white" loading={loading}>
+              {loading ? "Creando..." : "Crear Actividad"}
             </Button>
           </div>
         </Form>
@@ -516,8 +691,13 @@ export default function Home() {
       >
         <Form
           onSubmit={handleEditSubmit}
-          style="flex flex-col gap-6  rounded-lg"
+          style="flex flex-col gap-5 rounded-lg"
         >
+          {errors.general && (
+            <span className="text-red-500 text-s text-center">
+              {errors.general}
+            </span>
+          )}
           <Input
             label="Nombre de la Actividad"
             placeholder="Nombre de la Actividad"
@@ -525,6 +705,7 @@ export default function Home() {
             type="text"
             value={activityName}
             onChange={(e) => setActivityName(e.target.value)}
+            error={errors.activityName}
           />
           <Input
             label="Descripción de la Actividad"
@@ -534,6 +715,7 @@ export default function Home() {
             className="bg-white rounded-md p-2 text-xs w-full h-24 focus:outline-none focus:ring-2 focus:ring-one"
             value={activityDescription}
             onChange={(e) => setActivityDescription(e.target.value)}
+            error={errors.activityDescription}
           />
           <Input
             label="Estado de la Actividad"
@@ -555,6 +737,7 @@ export default function Home() {
               type="date"
               value={activityDeadline}
               onChange={(e) => setActivityDeadline(e.target.value)}
+              error={errors.activityDeadline}
             />
             <Input
               label="Hora límite de la Actividad"
@@ -563,6 +746,7 @@ export default function Home() {
               type="time"
               value={activityDeadlineTime}
               onChange={(e) => setActivityDeadlineTime(e.target.value)}
+              error={errors.activityDeadlineTime}
             />
           </div>
 
@@ -590,8 +774,8 @@ export default function Home() {
             >
               Cancelar
             </Button>
-            <Button bg="bg-one" textColor="text-white">
-              Guardar
+            <Button bg="bg-one" textColor="text-white" loading={loading}>
+              {loading ? "Guardando..." : "Guardar Cambios"}
             </Button>
           </div>
         </Form>
@@ -664,8 +848,8 @@ export default function Home() {
             >
               Cancelar
             </Button>
-            <Button bg="bg-one" textColor="text-white">
-              Guardar
+            <Button bg="bg-one" textColor="text-white" loading={loading}>
+              {loading ? "Guardando..." : "Guardar Cambios"}
             </Button>
           </div>
         </Form>
