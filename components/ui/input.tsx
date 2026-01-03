@@ -6,6 +6,8 @@ interface BaseProps {
   id: string;
   className?: string;
   value?: string;
+  icon?: React.ReactNode;
+  error?: string;
 }
 
 /* INPUT */
@@ -40,49 +42,87 @@ const Input = (props: InputProps) => {
     label,
     placeholder,
     id,
-    className = "bg-white rounded-md p-2 text-xs w-full focus:outline-none focus:ring-2 focus:ring-one",
+    className = "bg-white rounded-md p-2 text-xs  w-full focus:outline-none focus:ring-2 focus:ring-one   ",
     value,
+    icon,
   } = props;
 
   return (
-    <div className="flex flex-col gap-2 w-full">
-      <label htmlFor={id} className="text-xs font-medium">
+    <div className="flex flex-col w-full gap-1 ">
+      <label htmlFor={id} className="text-xs font-medium mt-1">
         {label}
       </label>
 
       {/* TEXTAREA */}
       {props.as === "textarea" && (
-        <textarea
-          id={id}
-          placeholder={placeholder}
-          onChange={props.onChange}
-          value={value}
-          className={`${className}`}
-        />
+        <>
+          <div className="relative w-full">
+            <textarea
+              id={id}
+              placeholder={placeholder}
+              onChange={props.onChange}
+              value={value}
+              className={`${className}`}
+            />
+
+            {/* error (con espacio reservado) */}
+            <span className="min-h-[4px] text-red-500 text-xs">
+              {props.error}
+            </span>
+          </div>
+        </>
       )}
 
       {/* SELECT */}
       {props.as === "select" && (
-        <select id={id} onChange={props.onChange} className={`${className}`}>
-          <option value="">Selecciona una opción</option>
-          {props.options.map((opt) => (
-            <option key={opt.value} value={opt.value} selected={value === opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+        <>
+          <div className="relative w-full">
+            <select
+              id={id}
+              onChange={props.onChange}
+              className={`${className}`}
+            >
+              <option value="">Selecciona una opción</option>
+              {props.options.map((opt) => (
+                <option
+                  key={opt.value}
+                  value={opt.value}
+                  selected={value === opt.value}
+                >
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+            <span className="min-h-[4px] text-red-500 text-xs">
+              {props.error}
+            </span>
+          </div>
+        </>
       )}
 
       {/* INPUT */}
       {(!props.as || props.as === "input") && (
-        <input
-          id={id}
-          type={props.type}
-          placeholder={placeholder}
-          onChange={props.onChange}
-          className={` ${className}`}
-          value={value}
-        />
+        <>
+          {/* input + icon */}
+          <div className="relative w-full">
+            <input
+              id={id}
+              type={props.type}
+              placeholder={placeholder}
+              onChange={props.onChange}
+              className={` ${className} truncate pr-6`}
+              value={value}
+            />
+            <span className="absolute right-1 top-1/2 -translate-y-1/2">
+              {icon}
+            </span>
+          </div>
+
+          {/* error (con espacio reservado) */}
+          <span className="min-h-[4px] text-red-500 text-xs">
+            {props.error}
+          </span>
+        </>
       )}
     </div>
   );
