@@ -42,7 +42,7 @@ const Input = (props: InputProps) => {
     label,
     placeholder,
     id,
-    className = "bg-white rounded-md p-2 text-xs  w-full focus:outline-none focus:ring-2 focus:ring-one   ",
+    className = "bg-white rounded-md p-2 text-xs  w-full focus:outline-none focus:ring-2 focus:ring-one truncate pr-6 ",
     value,
     icon,
   } = props;
@@ -110,7 +110,7 @@ const Input = (props: InputProps) => {
               type={props.type}
               placeholder={placeholder}
               onChange={props.onChange}
-              className={` ${className} truncate pr-3`}
+              className={` ${className}`}
               value={value}
             />
             <span className="absolute right-1 top-1/2 -translate-y-1/2">
