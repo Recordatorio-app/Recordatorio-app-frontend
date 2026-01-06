@@ -24,6 +24,24 @@ messaging.onBackgroundMessage((payload) => {
   self.registration.showNotification(title, {
     body,
     tag,
-    icon: "/public/icons/notification.png",
+    icon: "/icons/notification.png",
   });
+});
+
+self.addEventListener("notificationclick", event => {
+  event.notification.close();
+
+  const url = event.notification.data?.url || "http://localhost:3000";
+
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true })
+      .then(clientList => {
+        for (const client of clientList) {
+          if (client.url === url && "focus" in client) {
+            return client.focus();
+          }
+        }
+        return clients.openWindow(url);
+      })
+  );
 });
