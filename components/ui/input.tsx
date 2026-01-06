@@ -110,7 +110,7 @@ const Input = (props: InputProps) => {
               type={props.type}
               placeholder={placeholder}
               onChange={props.onChange}
-              className={` ${className} truncate pr-6`}
+              className={` ${className} truncate pr-3`}
               value={value}
             />
             <span className="absolute right-1 top-1/2 -translate-y-1/2">
