@@ -152,6 +152,19 @@ export default function TaskDetailPage() {
         });
         return;
       }
+          const response = await Swal.fire({
+      title: "¿Estás seguro de que deseas completar esta actividad?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, completar",
+      cancelButtonText: "Cancelar",
+      buttonsStyling: false,
+      customClass: {
+        confirmButton: "bg-one text-white px-4 py-2 rounded-md mr-2",
+        cancelButton: "bg-four text-black px-4 py-2 rounded-md",
+      },
+    });
+    if (!response.isConfirmed) return;
       const body = {
         title: task?.title || "",
         description: task?.description || "",
@@ -316,6 +329,7 @@ export default function TaskDetailPage() {
               label="Fecha límite de la Actividad"
               placeholder="Fecha límite de la Actividad"
               id="activityDeadline"
+              className="bg-white rounded-md p-2 text-xs  w-full focus:outline-none focus:ring-2 focus:ring-one"
               type="date"
               value={activityDeadline}
               onChange={(e) => setActivityDeadline(e.target.value)}
@@ -325,6 +339,7 @@ export default function TaskDetailPage() {
               label="Hora límite de la Actividad"
               placeholder="Hora límite de la Actividad"
               id="activityDeadlineTime"
+              className="bg-white rounded-md p-2 text-xs  w-full focus:outline-none focus:ring-2 focus:ring-one"
               type="time"
               value={activityDeadlineTime}
               onChange={(e) => setActivityDeadlineTime(e.target.value)}
