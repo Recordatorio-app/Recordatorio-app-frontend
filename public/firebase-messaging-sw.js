@@ -12,8 +12,18 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-  self.registration.showNotification(payload.notification.title, {
-    body: payload.notification.body,
-    icon: "./icons/icon.png",
+  console.log("✅ BACKGROUND MESSAGE", payload);
+
+  if (!payload?.data) {
+    console.warn("⚠️ Payload sin data", payload);
+    return;
+  }
+
+  const { title, body, tag } = payload.data;
+
+  self.registration.showNotification(title, {
+    body,
+    tag,
+    icon: "/public/icons/notification.png",
   });
 });
