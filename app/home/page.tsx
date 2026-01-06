@@ -641,6 +641,7 @@ export default function Home() {
               placeholder="Fecha límite de la Actividad"
               id="activityDeadline"
               type="date"
+              className="bg-white rounded-md p-2 text-xs  w-full focus:outline-none focus:ring-2 focus:ring-one"
               onChange={(e) => setActivityDeadline(e.target.value)}
               error={errors.activityDeadline}
             />
@@ -648,6 +649,7 @@ export default function Home() {
               label="Hora límite de la Actividad"
               placeholder="Hora límite de la Actividad"
               id="activityDeadlineTime"
+              className="bg-white rounded-md p-2 text-xs  w-full focus:outline-none focus:ring-2 focus:ring-one"
               type="time"
               onChange={(e) => setActivityDeadlineTime(e.target.value)}
               error={errors.activityDeadlineTime}
@@ -738,6 +740,7 @@ export default function Home() {
               label="Fecha límite de la Actividad"
               placeholder="Fecha límite de la Actividad"
               id="activityDeadline"
+              className="bg-white rounded-md p-2 text-xs  w-full focus:outline-none focus:ring-2 focus:ring-one"
               type="date"
               value={activityDeadline}
               onChange={(e) => setActivityDeadline(e.target.value)}
@@ -747,6 +750,7 @@ export default function Home() {
               label="Hora límite de la Actividad"
               placeholder="Hora límite de la Actividad"
               id="activityDeadlineTime"
+              className="bg-white rounded-md p-2 text-xs  w-full focus:outline-none focus:ring-2 focus:ring-one"
               type="time"
               value={activityDeadlineTime}
               onChange={(e) => setActivityDeadlineTime(e.target.value)}
