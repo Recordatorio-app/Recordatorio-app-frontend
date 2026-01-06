@@ -9,8 +9,6 @@ const EnableNotificationsButton = () => {
     try {
       const token = await requestNotificationPermission();
       console.log("🔥 PUSH TOKEN:", token);
-
-      // aquí luego lo mandas a tu backend
     } catch (err) {
       console.error("❌ Error push:", err);
     }
