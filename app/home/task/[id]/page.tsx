@@ -46,6 +46,11 @@ export default function TaskDetailPage() {
   useEffect(() => {
     getTaskById(id as string).then(setTask);
   }, [id]);
+  useEffect(() => {
+    if (!task) {
+      router.push("/");
+    }
+  }, [task, router]);
   const validate = () => {
     const newErrors: typeof errors = {};
 
@@ -152,19 +157,19 @@ export default function TaskDetailPage() {
         });
         return;
       }
-          const response = await Swal.fire({
-      title: "¿Estás seguro de que deseas completar esta actividad?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Sí, completar",
-      cancelButtonText: "Cancelar",
-      buttonsStyling: false,
-      customClass: {
-        confirmButton: "bg-one text-white px-4 py-2 rounded-md mr-2",
-        cancelButton: "bg-four text-black px-4 py-2 rounded-md",
-      },
-    });
-    if (!response.isConfirmed) return;
+      const response = await Swal.fire({
+        title: "¿Estás seguro de que deseas completar esta actividad?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, completar",
+        cancelButtonText: "Cancelar",
+        buttonsStyling: false,
+        customClass: {
+          confirmButton: "bg-one text-white px-4 py-2 rounded-md mr-2",
+          cancelButton: "bg-four text-black px-4 py-2 rounded-md",
+        },
+      });
+      if (!response.isConfirmed) return;
       const body = {
         title: task?.title || "",
         description: task?.description || "",
