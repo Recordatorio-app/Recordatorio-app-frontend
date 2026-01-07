@@ -46,11 +46,7 @@ export default function TaskDetailPage() {
   useEffect(() => {
     getTaskById(id as string).then(setTask);
   }, [id]);
-  useEffect(() => {
-    if (!task) {
-      router.push("/");
-    }
-  }, [task, router]);
+  
   const validate = () => {
     const newErrors: typeof errors = {};
 
