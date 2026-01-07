@@ -21,14 +21,10 @@ const poppins = Poppins({
   display: "swap",
 });
 
-
 export const metadata: Metadata = {
-  title: "Recordatorio App",
+  title: "Recordatorio App | Organiza tus tareas y recordatorios",
   description:
-    "Recordatorio App es una aplicación web moderna para gestionar tareas y recordatorios con notificaciones en tiempo real. Organiza tus pendientes, recibe alertas automáticas y mejora tu productividad desde cualquier dispositivo.",
-  icons: {
-    icon: "/icons/notification.png",
-  },
+    "Recordatorio App es una aplicación web para gestionar tareas y recordatorios con notificaciones automáticas. Aumenta tu productividad desde cualquier dispositivo.",
   keywords: [
     "recordatorios",
     "tareas",
@@ -36,9 +32,31 @@ export const metadata: Metadata = {
     "productividad",
     "notificaciones",
     "gestión de tareas",
-    "aplicación web",
   ],
+  authors: [{ name: "Joao Dev" }],
+  creator: "Joao Dev",
+  openGraph: {
+    title: "Recordatorio App",
+    description:
+      "Gestiona tus tareas y recibe recordatorios automáticos con notificaciones en tiempo real.",
+    url: "https://recordatorio-app.vercel.app",
+    siteName: "Recordatorio App",
+    images: [
+      {
+        url: "/icons/notification.png",
+        width: 1200,
+        height: 630,
+        alt: "Recordatorio App",
+      },
+    ],
+    locale: "es_ES",
+    type: "website",
+  },
+  icons: {
+    icon: "/icons/notification.png",
+  },
 };
+
 
 export default function RootLayout({
   children,
