@@ -109,6 +109,12 @@ export default function Home() {
     fetchTasks();
   }, [page, pageCompleted, user]);
 
+  useEffect(() => {
+    if (!user) {
+      router.push("/");
+    }
+  }, [user, router]);
+
   const validate = () => {
     const newErrors: typeof errors = {};
 
@@ -391,6 +397,7 @@ export default function Home() {
   };
 
   if (!palette) return null;
+  if (!user) return null;
 
   return (
     <main>
