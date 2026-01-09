@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     siteName: "Recordatorio App",
     images: [
       {
-        url: "/icons/notification.png",
+        url: "/icons/icon.png",
         width: 1200,
         height: 630,
         alt: "Recordatorio App",
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     type: "website",
   },
   icons: {
-    icon: "/icons/notification.png",
+    icon: "/icons/icon.png",
   },
 };
 
