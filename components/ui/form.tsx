@@ -9,7 +9,7 @@ const Form = ({
   children,
   onSubmit,
   title,
-  style = "flex flex-col gap-2 pt-10 pb-10 pr-5 pl-5 m-4 bg-four rounded-lg",
+  style = " max-w-xs lg:max-w-sm flex flex-col gap-2 pt-10 pb-10 pr-5 pl-5 m-4 bg-four rounded-lg",
 }: FormProps) => {
   return (
     <form onSubmit={onSubmit} className={style}>

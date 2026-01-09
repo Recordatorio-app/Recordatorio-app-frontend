@@ -220,42 +220,42 @@ export default function TaskDetailPage() {
   if (!task) return <div>Cargando...</div>;
 
   return (
-    <main className="flex flex-col items-center">
+    <main className="flex flex-col items-center lg:mb-50">
       <Banner
         title={"Actividad: " + task.title}
         color="bg-one"
         textColor="text-white"
       />
-      <section className="bg-three p-4 rounded-md shadow-md w-3/4 mt-10 mb-15 text-white">
+      <section className="bg-three p-4 rounded-md shadow-md w-3/4 mt-10 mb-15 text-white max-w-screen-sm">
         <h2>Descripción de la actividad</h2>
         <p>{task.description}</p>
       </section>
-      <section className="flex flex-row items-center gap-4 w-3/4 justify-center mb-10">
+      <section className="flex flex-row items-center gap-4 w-3/4 justify-center mb-10 max-w-screen-sm">
         <div className="bg-two p-4 rounded-md shadow-md w-3/4 mb-10 text-white">
           <p>
             Fecha de recordatorio:{" "}
             {new Date(task.reminderDate).toLocaleDateString()}
           </p>
         </div>
-        <div className="bg-four p-4 rounded-md shadow-md w-3/4 mb-10 text-white">
+        <div className="bg-four p-4 rounded-md shadow-md w-3/4 mb-10 text-white max-w-screen-sm">
           <p>
             Hora de recordatorio:{" "}
             {new Date(task.reminderDate).toLocaleTimeString()}
           </p>
         </div>
       </section>
-      <section className="bg-one p-4 text-s rounded-xl shadow-md w-3/4 mb-15 text-white flex text-center ">
+      <section className="bg-one p-4 text-s rounded-xl shadow-md w-3/4 mb-15 text-white flex text-center max-w-screen-sm">
         <p>
           Estado de la actividad{" "}
           <span className="font-bold ">{task.status}</span>
         </p>
       </section>
-      <section className="bg-one p-4 text-s rounded-xl shadow-md w-3/4 mb-15 text-white flex justify-center">
+      <section className="bg-one p-4 text-s rounded-xl shadow-md w-3/4 mb-15 text-white flex justify-center max-w-screen-sm">
         <p>
           Importancia <span className="font-bold">{task.colorKey}</span>
         </p>
       </section>
-      <section className="grid grid-cols-2 gap-4 m-4 mb-4">
+      <section className="grid grid-cols-2 gap-4 lg:grid-cols-4 m-4 ">
         <Button
           type="button"
           bg="bg-four shadow-md"

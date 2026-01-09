@@ -29,6 +29,7 @@ const Button = ({
         disabled:opacity-50
         disabled:cursor-not-allowed
         flex items-center justify-center gap-2
+        hover:cursor-pointer
       `}
       onClick={onClick}
     >

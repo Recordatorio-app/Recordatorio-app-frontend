@@ -406,7 +406,7 @@ export default function Home() {
           Bienvenido {user ? user.name : "Usuario"} al recordatorio de
           actividades
         </h1>
-        <div className="flex flex-col  gap-4 mt-5">
+        <div className="flex flex-col gap-4 mt-5 ">
           <Button
             bg="bg-four flex items-center gap-2 mt-5"
             textColor="text-black"
@@ -467,7 +467,7 @@ export default function Home() {
               height={"20"}
             />
           </Button>
-          <ul className="flex flex-row flex-wrap justify-center gap-2 mt-3">
+          <ul className="flex flex-wrap lg:flex-nowrap justify-center gap-2 mt-3">
             <li className="flex items-center gap-2">
               <span
                 className="w-3 h-3 rounded-sm"
@@ -546,10 +546,10 @@ export default function Home() {
         color="bg-one"
         textColor="text-white"
       />
-      <div className="mt-5 grid grid-cols-1 gap-5 m-4">
+      <div className="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-5  w-3/4 m-auto mb-4">
         {pendingTasks === 0 && (
-          <p className="text-center font-semibold">
-            No hay actividades pendientes
+          <p className=" col-span-full text-center font-semibold text-lg">
+            No hay actividades realizadas
           </p>
         )}
         {pendingTasksList.map((task) => (
@@ -581,9 +581,9 @@ export default function Home() {
         color="bg-two"
         textColor="text-white"
       />
-      <div className="mt-5 grid grid-cols-1 gap-5 m-4">
+      <div className="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-5  w-3/4 m-auto justify-center">
         {completedTasks === 0 && (
-          <p className="text-center font-semibold">
+          <p className=" col-span-full text-center font-semibold text-lg">
             No hay actividades realizadas
           </p>
         )}
@@ -690,7 +690,7 @@ export default function Home() {
             >
               Cancelar
             </Button>
-            <Button bg="bg-one" textColor="text-white" loading={loading}>
+            <Button bg="bg-one" textColor="text-white"  loading={loading}>
               {loading ? "Creando..." : "Crear Actividad"}
             </Button>
           </div>
